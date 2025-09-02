@@ -1,4 +1,4 @@
-package com.medimom.dao
+package com.sharednote.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -15,7 +15,6 @@ interface NoteDao {
 
     @Update
     suspend fun update(item: NoteEntity)
-
 
     @Query("""
         SELECT * 
@@ -36,8 +35,16 @@ interface NoteDao {
     @Query("""
         SELECT * 
         FROM notes
-        WHERE active = 1
+        WHERE active = 0
+        ORDER BY id
         """)
     fun getAllTrash(): Flow<List<NoteEntity>>
 
+    @Query("""
+        SELECT * 
+        FROM notes
+        WHERE title = :title
+        ORDER BY id DESC
+        """)
+    suspend fun getListByTitle(title:String): List<NoteEntity>
 }

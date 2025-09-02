@@ -4,14 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.medimom.dao.FolderDao
-import com.medimom.dao.NoteDao
+import com.sharednote.dao.FolderDao
+import com.sharednote.dao.NoteDao
 import com.sharednote.entity.FolderEntity
 import com.sharednote.entity.NoteEntity
 
 @Database(entities = [
     NoteEntity::class, FolderEntity::class],
-    version = 7,
+    version = 13,
     exportSchema = true)
 
 abstract class AppDatabase : RoomDatabase() {

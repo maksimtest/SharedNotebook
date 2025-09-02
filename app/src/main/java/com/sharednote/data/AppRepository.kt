@@ -3,6 +3,7 @@ package com.sharednote.data
 import com.sharednote.entity.FolderEntity
 import com.sharednote.entity.NoteEntity
 import kotlinx.coroutines.flow.Flow
+import kotlin.Boolean
 
 class AppRepository(private val db: AppDatabase) {
     //val dataHelper = DataHelper()
@@ -24,6 +25,10 @@ class AppRepository(private val db: AppDatabase) {
         }
     }
 
+    suspend fun insertNote(item: NoteEntity) {
+        db.noteDao().insert(item)
+    }
+
     suspend fun updateFolder(item: FolderEntity) {
         if (item.id == 0) {
             db.folderDao().insert(item)
@@ -32,8 +37,15 @@ class AppRepository(private val db: AppDatabase) {
         }
     }
 
+    suspend fun getNoteByTitle(title: String): NoteEntity {
+        val listNotes = db.noteDao().getListByTitle(title)
+        if (listNotes.isEmpty()) {
+            return NoteEntity(0, "newTitle1", "", true, 0)
+        }
+        return listNotes[0]
+    }
+
     suspend fun deleteFolder(item: FolderEntity) {
         db.folderDao().delete(item)
     }
-
 }

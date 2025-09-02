@@ -1,4 +1,4 @@
-package com.medimom.dao
+package com.sharednote.dao
 
 import androidx.room.Dao
 import androidx.room.Delete

@@ -11,5 +11,5 @@ import java.time.format.DateTimeFormatter
 data class FolderEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val num: Int
+    val num:Int = 0
 )
