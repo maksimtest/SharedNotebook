@@ -1,9 +1,10 @@
-package com.sharednote.entity
+package com.sharednote.colors
 
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import com.sharednote.entity.NoteEntity
 
 @Immutable
 data class ColorGroup(

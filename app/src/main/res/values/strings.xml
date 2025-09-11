@@ -1,0 +1,75 @@
+<resources>
+    <string name="app_name">SharedNote</string>
+    <string name="title_activity_languge">LangugeActivity</string>
+
+    <string name="menu_title">Menu</string>
+    <string name="menu_language">Language</string>
+    <string name="menu_trash">Trash</string>
+    <string name="menu_theme_color">Theme color</string>
+    <string name="menu_folder">Folder</string>
+    <string name="menu_mode">View by list/block</string>
+    <string name="menu_sort">Sort</string>
+    <string name="menu_help">Help Canter</string>
+    <string name="menu_about">About</string>
+
+    <string name="ALL_FOLDER">All</string>
+
+    <string name="DUPLICATE_NOTE_TITLE_ERROR">Duplication error while we try to create %1$s folder.\nPlease, rename according folder!</string>
+    <string name="DUPLICATE_FOLDER_NAME_ERROR">Duplication error while we try to create %1$s note.\nPlease, rename according note!</string>
+
+    <string name="CONFIRM_DIALOG_TITLE">Confirm delete</string>
+    <string name="CONFIRM_DELETE_DIALOG_TEXT">Do you really want to delete \"%1$s\"?"</string>
+    <string name="CONFIRM_BTN_YES">Yes</string>
+    <string name="CONFIRM_BTN_NO">No</string>
+
+    <string name="ABOUT_DIALOG_VERSION">Version %1$s</string>
+
+    <string name="HELP_DIALOG_TITLE1">SharedNote – Help and Support</string>
+    <string name="HELP_DIALOG_TEXT1">Welcome to SharedNote! This page will guide you through the main features of the app and help you solve common questions.</string>
+    <string name="HELP_DIALOG_TITLE2">What is SharedNote?</string>
+    <string name="HELP_DIALOG_TEXT2">SharedNote is a simple and convenient note-taking app that allows you to:\n
+        • Create and edit notes with titles and content\n
+        • Highlight important notes by coloring their titles\n
+        • Organize notes into folders\n
+        • Change the app language\n
+        • Customize how notes are displayed (list or grid view)\n
+        • Sort notes by different parameters\n
+        • Share notes with another device running SharedNote
+    </string>
+    <string name="HELP_DIALOG_TITLE3">Main Features</string>
+    <string name="HELP_DIALOG_SUBTITLE3">1. Creating Notes</string>
+    <string name="HELP_DIALOG_TEXT3">Tap the ➕ Add button to create a new note. Enter a title and content, choose whether it’s active or archived.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE4">2. Organizing Notes</string>
+    <string name="HELP_DIALOG_TEXT4">Create folders to keep your notes structured. Move notes between folders anytime.</string>
+    <string name="HELP_DIALOG_SUBTITLE5">3. Highlighting Important Notes</string>
+    <string name="HELP_DIALOG_TEXT5">Assign different colors to note titles. Use bright colors to emphasize urgent or important items.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE6">4. Customization</string>
+    <string name="HELP_DIALOG_TEXT6">Switch app language in settings. Choose how notes are displayed: list view for compactness or grid view for visibility.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE7">5. Sorting and Filtering</string>
+    <string name="HELP_DIALOG_TEXT7">Sort notes by creation date, title, or activity. Use the search bar to quickly find notes.</string>
+    <string name="HELP_DIALOG_SUBTITLE8">6. Sharing Notes</string>
+    <string name="HELP_DIALOG_TEXT8">Share notes with another device that has SharedNote installed. Useful for switching phones or syncing.</string>
+
+    <string name="HELP_DIALOG_TITLE9">Settings</string>
+    <string name="HELP_DIALOG_TEXT9">
+        • Change Theme – pick a color theme.\n
+        • Language – switch between supported languages.\n
+        • View Mode – select list or grid view.
+    </string>
+
+    <string name="HELP_DIALOG_TITLE10">Frequently Asked Questions</string>
+    <string name="HELP_DIALOG_TEXT10">
+        Q: How do I transfer notes to another phone?\nA: Use the Share feature inside the app.\n\n
+        Q: Can I back up my notes?\nA: Yes. Notes can be exported and restored on another device.\n\n
+        Q: Can I highlight important notes?\nA: Yes, by assigning colors to note titles.\n\n
+        Q: Does SharedNote work offline?\nA: Absolutely. All features work without internet access.
+    </string>
+
+    <string name="HELP_DIALOG_TITLE11">Need More Help?</string>
+    <string name="HELP_DIALOG_TEXT11">If you have questions, suggestions, or issues, please contact us at:\n support@example.com</string>
+
+
+</resources>

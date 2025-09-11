@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -25,6 +28,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Palette
@@ -65,14 +69,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
@@ -81,10 +80,9 @@ import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
 import com.sharednote.R
 import com.sharednote.colors.rememberColorGroups
 import com.sharednote.data.MainViewModel
-import com.sharednote.entity.ColorGroup
+import com.sharednote.colors.ColorGroup
 import com.sharednote.entity.FolderEntity
 import com.sharednote.entity.NoteEntity
-import com.sharednote.entity.themeFrom
 import com.sharednote.navigation.TypeScreen
 import com.sharednote.navigation.ViewScreen
 import kotlin.Boolean
@@ -97,34 +95,33 @@ fun NoteItemScreen(
     mainViewModel: MainViewModel,
     viewScreenState: MutableState<ViewScreen>,
     onBackClick: () -> Unit,
-    onShareClick: () -> Unit = {}
+    onShareClick: (NoteEntity) -> Unit = {},
+    onDeleteClick: (NoteEntity) -> Unit = {}
 ) {
-    val noteEntity =
-        viewScreenState.value.selectedNote ?: NoteEntity(
-            0,
-            "title1",
-            "content",
-            true,
-            0
-        )
+    val noteEntity1: NoteEntity =
+        viewScreenState.value.selectedNote ?: NoteEntity(0, "new", "", true, 0)
+
+//    var noteEntity = NoteEntity(
+//        item.id,
+//        item.title,
+//        item.content,
+//        true,
+//        item.folderId,
+//        item.themeIndex
+//    )
+    val noteState = remember(noteEntity1.id) { mutableStateOf(noteEntity1) }
+
+    Log.d("MyTag", "NoteItemEntity: noteEntity=${noteEntity1}")
 
     val colorGroups = rememberColorGroups()
-
-    var selectedColorGroup by remember(noteEntity.id, colorGroups) {
-        mutableStateOf(noteEntity.themeFrom(colorGroups))
+    var selectedColorGroup by remember(noteEntity1.id, colorGroups) {
+        mutableStateOf(colorGroups[noteEntity1.themeIndex])
     }
+
     val isChangeThemeDialogVisibleState = remember { mutableStateOf(false) }
-    val isEditingState = remember { mutableStateOf(true) }
-    val isOpenChooseFolderState = remember(noteEntity.id) { mutableStateOf(false) }
+    val isOpenChooseFolderState = remember(noteEntity1.id) { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val editorState = rememberRichTextState()
-    val onShareClick: () -> Unit = {}
-
-    Log.d(
-        "MyTag",
-        "NoteItemScreen().1, noteEntity: title=${noteEntity.title}, themeIndex=${noteEntity.themeIndex}"
-    )
-    Log.d("MyTag", "NoteItemScreen().2, selectedColorGroup=${selectedColorGroup.titleColor}")
 
     Scaffold(
         modifier = Modifier
@@ -152,26 +149,33 @@ fun NoteItemScreen(
                         scrolledContainerColor = selectedColorGroup.titleColor
                     ),
                     title = {
-                        Row(
+                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
 
-                            EditableTitle(noteEntity) { newTitle: String, note: NoteEntity ->
-                                val newNote = NoteEntity(
-                                    note.id,
-                                    newTitle,
-                                    note.content,
-                                    true,
-                                    note.folderId
-                                )
-                                mainViewModel.update(newNote)
+                            EditableTitle(noteState) { newTitle: String ->
+                                noteState.value = noteState.value.copy(title = newTitle)
+//                                val newNote = NoteEntity(
+//                                    note.id,
+//                                    newTitle,
+//                                    note.content,
+//                                    true,
+//                                    note.folderId
+//                                )
+                                mainViewModel.update(noteState.value)
                             }
                             Row() {
 
-                                IconButton(onClick = onShareClick) {
+                                IconButton(onClick = { onDeleteClick(noteState.value) }) {
+                                    Icon(Icons.Default.DeleteForever, contentDescription = "Delete")
+                                }
+
+                                IconButton(onClick = {
+                                    onShareClick(noteState.value)
+                                }) {
                                     Icon(Icons.Default.Share, contentDescription = "Share")
                                 }
 
@@ -193,14 +197,17 @@ fun NoteItemScreen(
                                     }
                                 } else {
                                     IconButton(onClick = {
-                                        val newNote = NoteEntity(
-                                            noteEntity.id,
-                                            noteEntity.title,
-                                            editorState.toText(),
-                                            true,
-                                            noteEntity.folderId
-                                        )
-                                        mainViewModel.update(newNote)
+
+                                        noteState.value =
+                                            noteState.value.copy(content = editorState.toText())
+//                                        val newNote = NoteEntity(
+//                                            noteEntity.id,
+//                                            noteEntity.title,
+//                                            editorState.toText(),
+//                                            true,
+//                                            noteEntity.folderId
+//                                        )
+                                        mainViewModel.update(noteState.value)
 
                                         viewScreenState.value = ViewScreen(
                                             viewScreenState.value.typeScreen,
@@ -226,9 +233,9 @@ fun NoteItemScreen(
         },
         content = { innerPadding ->
             if (isChangeThemeDialogVisibleState.value) {
-                ChangeColorThemeDialog(
+                ChangeColorSettingsThemeDialog(
                     mainViewModel,
-                    noteEntity,
+                    noteState,
                     onDismiss = {
                         isChangeThemeDialogVisibleState.value = false
                     },
@@ -242,11 +249,11 @@ fun NoteItemScreen(
                 mainViewModel,
                 isOpenChooseFolderState,
                 innerPadding,
-                noteEntity,
+                noteState,
                 viewScreenState,
                 editorState,
                 onSelectFolder = {
-                  isOpenChooseFolderState.value = false
+                    isOpenChooseFolderState.value = false
                 },
                 selectedColorGroup = selectedColorGroup
             )
@@ -256,11 +263,11 @@ fun NoteItemScreen(
 
 @Composable
 fun EditableTitle(
-    noteEntity: NoteEntity,
-    onTitleSave: (String, NoteEntity) -> Unit
+    noteEntityState: MutableState<NoteEntity>,
+    onTitleSave: (String) -> Unit
 ) {
-    var isEditing by rememberSaveable(noteEntity.id) { mutableStateOf(false) }
-    var title by rememberSaveable(noteEntity.id) { mutableStateOf(noteEntity.title) }
+    var isEditing by rememberSaveable(noteEntityState.value.id) { mutableStateOf(false) }
+    var title by rememberSaveable(noteEntityState.value.id) { mutableStateOf(noteEntityState.value.title) }
     val focusRequester = remember { FocusRequester() }
     val keyboard = LocalSoftwareKeyboardController.current
     var hadFocus by remember { mutableStateOf(false) }
@@ -278,21 +285,36 @@ fun EditableTitle(
             value = title,
             onValueChange = { title = it },
             singleLine = true,
-            textStyle = MaterialTheme.typography.titleLarge,
+            textStyle = MaterialTheme.typography.titleMedium,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = {
                 isEditing = false
-                onTitleSave(title, noteEntity)
+                onTitleSave(title)
+                Log.d("MyTag", "EditableTitle, keyboardActions(), change isEditing=$isEditing")
                 keyboard?.hide()
             }),
             modifier = Modifier
                 .focusRequester(focusRequester)
                 .onFocusChanged { fs ->
+                    Log.d(
+                        "MyTag",
+                        "EditableTitle: onFocusChanged()_1, fs.isFocused=${fs.isFocused}, hadFocus=${hadFocus}"
+                    )
                     if (fs.isFocused) hadFocus = true
+                    Log.d(
+                        "MyTag",
+                        "EditableTitle: onFocusChanged()_2, hadFocus=${hadFocus}, fs.hasFocus=${fs.hasFocus}"
+                    )
                     // Закрываем редактирование только если фокус уже был и ушёл
                     if (hadFocus && !fs.hasFocus) {
                         isEditing = false
-                        onTitleSave(title, noteEntity)
+                        hadFocus = false
+                        onTitleSave(title)
+                        Log.d(
+                            "MyTag", "EditableTitle: onFocusChanged()_3" +
+                                    ", change isEditing=${isEditing}" +
+                                    ", change hadFocus=${hadFocus}"
+                        )
                     }
                 }
                 .background(colorResource(R.color.white), RoundedCornerShape(4.dp))
@@ -303,114 +325,124 @@ fun EditableTitle(
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.clickable { isEditing = true }
+            modifier = Modifier.clickable {
+                isEditing = true
+                Log.d("MyTag", "EditableTitle: onClick in Text, change isEditing=true")
+            }
         )
     }
 }
 
 @Composable
-  fun EditableFolder(
+fun SelectedFolder(
     mainViewModel: MainViewModel,
     selectedColorGroup: ColorGroup,
-    noteEntity: NoteEntity,
+    noteStatus: MutableState<NoteEntity>,
     isEditingFolderState: MutableState<Boolean>,
-    onSelectFolder:()->Unit,
+    onSelectFolder: () -> Unit,
     onFolderSave: () -> Unit
 ) {
-    var folderName by rememberSaveable(noteEntity.id) { mutableStateOf("") }
-    //var isEditing by rememberSaveable(noteEntity.id) { mutableStateOf(false) }
-    //val folders = mainViewModel.folders.collectAsState()
+    var folderName by rememberSaveable(noteStatus.value.id) { mutableStateOf("") }
 
     val folders by mainViewModel.folders.collectAsState()
     val foldersWithAll = remember(folders) {
         (listOf(FolderEntity(0, "All", 0)) + folders).distinctBy { it.id }
     }
-
-
-//    var title by rememberSaveable(noteEntity.id) { mutableStateOf(noteEntity.title) }
-//    val focusRequester = remember { FocusRequester() }
-//    val keyboard = LocalSoftwareKeyboardController.current
-//    var hadFocus by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
 
     // Фокус и клавиатура — именно при входе в режим редактирования
-    LaunchedEffect(noteEntity.id) {
+    LaunchedEffect(noteStatus.value.id) {
         folderName =
-            mainViewModel.folders.value.find { it.id == noteEntity.folderId }?.name ?: "All"
+            mainViewModel.folders.value.find { it.id == noteStatus.value.folderId }?.name ?: "All"
+        if (isEditingFolderState.value) {
+            focusRequester.requestFocus()
+        }
     }
-
-    Row(
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .background(selectedColorGroup.bgColorStart)
-            .padding(vertical = 10.dp, horizontal = 40.dp)
-        //.border(1.dp, colorResource(R.color.grey), RoundedCornerShape(8.dp))
+            .padding(top=10.dp)
+            //.fillMaxSize()
+            .wrapContentSize()
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                if (isEditingFolderState.value) {
+                    isEditingFolderState.value = false
+                    focusManager.clearFocus()
+                }
+            }
     ) {
         Row(
             modifier = Modifier
-                .background(selectedColorGroup.titleColor)
-                .border(1.dp, colorResource(R.color.grey), RoundedCornerShape(8.dp))
-                .padding(vertical = 6.dp, horizontal = 10.dp)
+                .fillMaxWidth()
+                .background(selectedColorGroup.bgColorStart)
+                .padding(vertical = 10.dp, horizontal = 40.dp)
         ) {
-            Text(
-                text = folderName,
-                style = MaterialTheme.typography.titleMedium,
+            Row(
                 modifier = Modifier
-                    .clickable { isEditingFolderState.value = true },
-                //        .border(1.dp, colorResource(R.color.palette1), RoundedCornerShape(10.dp))
-                //        .padding(vertical = 6.dp, horizontal = 10.dp)
-            )
-            Icon(
-                Icons.Default.ChevronLeft,
-                contentDescription = "More",
-                modifier = Modifier.rotate(-90f)
-            )
+                    .background(selectedColorGroup.titleColor)
+                    .border(1.dp, colorResource(R.color.grey), RoundedCornerShape(8.dp))
+                    .padding(vertical = 6.dp, horizontal = 10.dp)
+                    .focusRequester(focusRequester)
+                    .focusable() // ВАЖНО: Row теперь получает/теряет фокус
+                    .clickable {
+                        isEditingFolderState.value = true
+                    }
+            ) {
+                Text(
+                    text = folderName,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
+                        .clickable { isEditingFolderState.value = true },
+                )
+                Icon(
+                    Icons.Default.ChevronLeft,
+                    contentDescription = "More",
+                    modifier = Modifier.rotate(-90f)
+                )
+            }
         }
-    }
 
-    if (isEditingFolderState.value) {
-        Box(
-            modifier = Modifier
-                .width(100.dp)
-                .padding(start=40.dp)
-        ) {
+        if (isEditingFolderState.value) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-//                    .onGloballyPositioned { coordinates ->
-//                        textFieldSize = coordinates.size.toSize()
-//                    }
+                    .width(100.dp)
+                    .padding(start = 40.dp)
             ) {
-                DropdownMenu(
-                    expanded = true,
-                    onDismissRequest = {
-//                    onUpdate(state.copy(isDropdownExpanded = false))
-                    },
+                Box(
                     modifier = Modifier
-                        .background(selectedColorGroup.titleColor)
-//                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                        .fillMaxWidth()
                 ) {
-                    foldersWithAll.forEachIndexed { i, folder ->
-                        DropdownMenuItem(
-                            text = { Text(folder.name) },
-                            onClick = {
-                                val newNote = NoteEntity(
-                                    noteEntity.id,
-                                    noteEntity.title,
-                                    noteEntity.content,
-                                    true,
-                                    folder.id
-                                )
-                                mainViewModel.update(newNote)
-                                folderName = folder.name
-                                onSelectFolder()
-                            }
-                        )
-                        if (i < foldersWithAll.lastIndex) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(start = 12.dp, end = 12.dp),
-                                thickness = 1.dp,
-                                color = MaterialTheme.colorScheme.outlineVariant
+                    DropdownMenu(
+                        expanded = true,
+                        onDismissRequest = {
+                            isEditingFolderState.value = false
+                            focusManager.clearFocus()
+                        },
+                        modifier = Modifier
+                            .background(selectedColorGroup.titleColor)
+                    ) {
+                        foldersWithAll.forEachIndexed { i, folder ->
+                            DropdownMenuItem(
+                                text = { Text(folder.name) },
+                                onClick = {
+                                    noteStatus.value = noteStatus.value.copy(folderId = folder.id)
+                                    mainViewModel.update(noteStatus.value)
+                                    folderName = folder.name
+                                    isEditingFolderState.value = false
+                                    focusManager.clearFocus()
+                                    onSelectFolder()
+                                }
                             )
+                            if (i < foldersWithAll.lastIndex) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(start = 12.dp, end = 12.dp),
+                                    thickness = 1.dp,
+                                    color = MaterialTheme.colorScheme.outlineVariant
+                                )
+                            }
                         }
                     }
                 }
@@ -425,24 +457,27 @@ fun RichTextEditorContainer(
     mainViewModel: MainViewModel,
     isEditingFolderState: MutableState<Boolean>,
     padding: PaddingValues,
-    nodeEntity: NoteEntity,
+    noteState: MutableState<NoteEntity>,
     viewScreenState: MutableState<ViewScreen>,
     editorState: RichTextState,
     selectedColorGroup: ColorGroup,
-    onSelectFolder:()->Unit
+    onSelectFolder: () -> Unit
 ) {
-    LaunchedEffect(nodeEntity.id) {
-        editorState.setHtml(nodeEntity.content)
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(noteState.value.id) {
+        editorState.setHtml(noteState.value.content)
     }
     Column(
         Modifier
             .fillMaxSize()
             .padding(padding)
     ) {
-        EditableFolder(
+        SelectedFolder(
             mainViewModel,
             selectedColorGroup,
-            nodeEntity,
+            noteState,
             isEditingFolderState,
             onSelectFolder
         ) {}
@@ -544,73 +579,3 @@ fun LinedRichEditor(
         )
     }
 }
-
-
-@Composable
-fun LinedRichEditorOld(
-    state: RichTextState,                  // твой тип состояния из rich text либы
-    readOnly: Boolean,
-    modifier: Modifier = Modifier,
-    lineColor: Color = Color(0xFFE6EBF1),  // цвет линий
-) {
-    val density = LocalDensity.current
-    val textStyle = MaterialTheme.typography.bodyLarge
-
-    // Шаг между линиями ≈ высота строки
-    val lineStepPx = with(density) {
-        val lh =
-            if (textStyle.lineHeight.isSpecified) textStyle.lineHeight else textStyle.fontSize * 1.3f
-        lh.toPx().coerceAtLeast(20f)
-    }
-    val strokePx = with(density) { 1.dp.toPx() }
-    val radius = 8.dp
-    val vPad = 12.dp
-    val hPad = 16.dp
-
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(radius))          // чтобы линии не выходили за рамку
-            .background(Color.White)
-            .drawBehind {
-                val w = size.width
-                var y =
-                    with(density) { vPad.toPx() }  // начинаем после верхнего внутреннего отступа
-                while (y < size.height) {
-                    drawLine(
-                        color = lineColor,
-                        start = Offset(0f, y),
-                        end = Offset(w, y),
-                        strokeWidth = strokePx
-                    )
-                    y += lineStepPx
-                }
-            }
-            .border(1.dp, Color.LightGray, RoundedCornerShape(radius))
-            .padding(horizontal = hPad, vertical = vPad)
-    ) {
-        RichTextEditor(
-            state = state,
-            enabled = true,
-            readOnly = readOnly,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Transparent) // важно: фон редактора прозрачный
-        )
-    }
-}
-
-fun RichTextState.toggleBold() =
-    toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
-
-fun RichTextState.toggleItalic() =
-    toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic))
-
-fun RichTextState.toggleUnderline() =
-    toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline))
-
-fun RichTextState.toggleStrikethrough() =
-    toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
-
-// Списки (в 1.x есть готовые методы)
-fun RichTextState.toggleBulletList() = toggleUnorderedList()
-fun RichTextState.toggleNumberedList() = toggleOrderedList()

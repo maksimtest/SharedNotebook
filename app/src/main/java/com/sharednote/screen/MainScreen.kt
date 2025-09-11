@@ -1,7 +1,9 @@
 package com.sharednote.screen
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,9 +23,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.Downloading
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -51,8 +53,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -60,7 +64,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import com.sharednote.R
+import com.sharednote.bt.BtShareViewModel
+import com.sharednote.bt.DevicePickerDialog
 import com.sharednote.colors.rememberColorGroups
 import com.sharednote.data.MainViewModel
 import com.sharednote.entity.FolderEntity
@@ -73,7 +80,12 @@ import com.sharednote.navigation.DrawerMenuItem
 import com.sharednote.navigation.TypeScreen
 import com.sharednote.navigation.ViewScreen
 import com.sharednote.settings.UserSettings
+import com.sharednote.share.exportAndShare
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlin.String
 
 
 @Composable
@@ -82,26 +94,91 @@ fun MainScreen(
     userSettings: UserSettings,
     onLanguagePicked: (String) -> Unit,
 ) {
+    val context = LocalContext.current
     val viewScreenState = remember { mutableStateOf(ViewScreen(TypeScreen.NoteList, null, true)) }
+    val scope = rememberCoroutineScope()
+
+    var showReceiver by remember { mutableStateOf(false) }
+    var showDevicePicker by remember { mutableStateOf(false) }
+    val vm: BtShareViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    var noteEntityJsonForShare = remember { mutableStateOf("") }
+    var noteIdDeleteConfirmOpen by remember { mutableStateOf(0) }
+
+    if (noteIdDeleteConfirmOpen != 0) {
+        ConfirmDeleteDialog(
+            title = "Note 1",
+            onConfirm = {
+                mainViewModel.disActiveNoteId(noteIdDeleteConfirmOpen)
+                viewScreenState.value = ViewScreen(TypeScreen.NoteList, null, true)
+
+                noteIdDeleteConfirmOpen = 0
+            },
+            onDismiss = {
+                noteIdDeleteConfirmOpen = 0
+            }
+        )
+    }
+    if (showReceiver) {
+        // 101
+        BtReceiverDialog(mainViewModel, onClose = { showReceiver = false })
+    }
+//    if (noteEntityJsonForShare.value.isNotEmpty()) {
+//        BtReceiverScreen(mainViewModel)
+
+//            onSelect = { device ->
+//                // готуємо JSON і шлемо через наш транспорт
+//                vm.sendTo(device, noteEntityJsonForShare.value)
+//                noteEntityJsonForShare.value = ""
+//            },
+//            onDismiss = { noteEntityJsonForShare.value = "" }
+//        )
+//    }
 
     when (viewScreenState.value.typeScreen) {
         TypeScreen.NoteList -> NotesListScreen(
-            mainViewModel, userSettings,
+            mainViewModel, userSettings, noteEntityJsonForShare,
             onLanguagePicked = { tag -> onLanguagePicked(tag) },
-            onAddClick = {
-                viewScreenState.value = ViewScreen(TypeScreen.NoteItem, null, true)
+            onAddClick = { title ->
+                scope.launch {
+                    mainViewModel.insertNote(
+                        NoteEntity(
+                            0,
+                            title,
+                            "",
+                            true,
+                            0
+                        )
+                    )
+                    val newNote = mainViewModel.getNoteByTitle(title)
+                    viewScreenState.value = ViewScreen(TypeScreen.NoteItem, newNote, true)
+                }
             },
             onNoteClick = { item ->
                 Log.d("MyTag", "NotesListScreen, item=$item")
-                viewScreenState.value = ViewScreen(TypeScreen.NoteItem, item, true)
+                viewScreenState.value = ViewScreen(TypeScreen.NoteItem, item, false)
             },
-            onShareClick = { item -> {} })
+            onShareReceivedClick = {
+                Log.d("MyTag", "MainScreen, onShareReceivedClick, showReceiver set true")
+                showReceiver = true
+            },
+        )
 
         TypeScreen.NoteItem -> NoteItemScreen(
             mainViewModel,
             viewScreenState,
             onBackClick = { viewScreenState.value = ViewScreen(TypeScreen.NoteList, null, true) },
-            onShareClick = {}
+            onShareClick = { item ->
+//                val noteJson = Json { ignoreUnknownKeys = true; encodeDefaults = true }
+//                val payload = noteJson.encodeToString(NoteEntity.serializer(),item.copy(id = 0))
+//                noteEntityJsonForShare.value = payload
+                CoroutineScope(Dispatchers.IO).launch {
+                    exportAndShare(context, item)
+                }
+            },
+            onDeleteClick = { item ->
+                Log.d("MyTag", "onDeleteClick, item=${item}")
+                noteIdDeleteConfirmOpen = item.id
+            }
         )
     }
 }
@@ -122,36 +199,73 @@ fun ShowSettingsDialog(
         Log.d("MyTag", "ShowSettingsDialog(), showSettingsDialog.value=${showSettingsDialog.value}")
         AlertDialog(
             onDismissRequest = { showSettingsDialog.value = "" },
-            title = { Text(header) },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = showSettingsDialog.value != "help"
+            ),
+            title = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+
+                    ,
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = if (showSettingsDialog.value == "help" || showSettingsDialog.value == "language") Arrangement.Start
+                    else Arrangement.Center
+                ) {
+                    if (showSettingsDialog.value == "help") {
+                        IconButton(
+                            modifier = Modifier
+                                .padding(start = 0.dp, end = 40.dp)
+                                .border(1.dp, Color.LightGray)
+                                .padding(0.dp),
+                            onClick = {
+                                showSettingsDialog.value = ""
+                            }) {
+                            Icon(Icons.Default.ArrowBackIosNew, contentDescription = "Back")
+                        }
+                    }
+                    Text(header)
+                }
+            },
             text = {
                 when (showSettingsDialog.value) {
-                    "language" -> ColumnLanguageDialog(
+                    "language" -> LanguageSettingsDialogColumn(
                         userSettings,
                         onLanguagePicked,
                         showSettingsDialog
                     )
 
-                    "theme_color" -> ColumnThemeColorDialog(
+                    "theme_color" -> ThemeColorSettingsDialogColumn(
                         mainViewModel,
                         userSettings,
                         viewSettings,
                         showSettingsDialog
                     )
 
-                    "folders" -> ColumnFolderDialog(mainViewModel)
+                    "folders" -> FolderSettingsDialogColumn(mainViewModel)
 
-                    "mode" -> ColumnLayoutTypeDialog(
+                    "mode" -> LayoutTypeSettingsDialogColumn(
                         userSettings,
                         viewSettings,
                         showSettingsDialog
                     )
 
-                    "sort" -> ColumnSortDialog(
+                    "trash" -> TrashSettingsDialogColumn(
+                        mainViewModel
+                    )
+
+                    "sort" -> SortSettingsDialogColumn(
                         mainViewModel,
                         userSettings,
                         viewSettings,
                         showSettingsDialog
                     )
+
+                    "help" -> HelpSettingsDialogColumn() {
+                    }
+
+                    "about" -> AboutSettingsDialogColumn() {
+                    }
                 }
             },
             confirmButton = {},
@@ -166,10 +280,11 @@ fun ShowSettingsDialog(
 fun NotesListScreen(
     mainViewModel: MainViewModel,
     userSetting: UserSettings,
+    noteEntityJsonForShare: MutableState<String>,
     onLanguagePicked: (String) -> Unit,
-    onAddClick: () -> Unit,
+    onAddClick: (title: String) -> Unit,
     onNoteClick: (NoteEntity) -> Unit,
-    onShareClick: (NoteEntity) -> Unit
+    onShareReceivedClick: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -178,7 +293,7 @@ fun NotesListScreen(
 
     val initViewSettings = ViewSettings(
         userSetting.getLayoutTypeValue(),
-        colorInt,
+        userSetting.mainBackground,//colorInt,
         userSetting.getSortTypeValue(),
         0
     )
@@ -194,8 +309,9 @@ fun NotesListScreen(
     val menu: List<DrawerMenuItem> = DrawerMenu(context).getMenu()
     val notes by mainViewModel.activeNotes.collectAsState()
     val folders1 by mainViewModel.folders.collectAsState()
+    val allFolderName = context.getString(R.string.ALL_FOLDER)
     val foldersWithAll = remember(folders1) {
-        (listOf(FolderEntity(0, "All", 0)) + folders1).distinctBy { it.id }
+        (listOf(FolderEntity(0, allFolderName, 0)) + folders1).distinctBy { it.id }
     }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -217,11 +333,27 @@ fun NotesListScreen(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Text(
-                    stringResource(R.string.menu_title),
-                    modifier = Modifier.padding(16.dp),
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        stringResource(R.string.menu_title),
+                        modifier = Modifier.padding(16.dp),
+                        fontWeight = FontWeight.Bold
+                    )
+                    IconButton(
+                        modifier = Modifier
+                            .padding(end = 10.dp),
+                        onClick = {
+                            coroutineScope.launch {
+                                drawerState.close()
+                            }
+                        }) {
+                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = "Back")
+                    }
+                }
                 Divider()
                 LazyColumn() {
                     items(menu) { item ->
@@ -263,7 +395,7 @@ fun NotesListScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("SharedNotepad") },
+                    title = { Text("SharedNotepad-v24") },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = colorResource(id = viewSettings.value.mainBackgroundRes)
                     ),
@@ -274,19 +406,28 @@ fun NotesListScreen(
                                 drawerState.open()
                             }
                         }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Меню")
+                            Icon(Icons.Default.Menu, contentDescription = "Menu")
                         }
                     },
                     actions = {
-                        IconButton(onClick = { /* TODO: Поиск */ }) {
-                            Icon(Icons.Default.Search, contentDescription = "Поиск")
+                        IconButton(onClick = { onShareReceivedClick() }) {
+                            Icon(Icons.Default.Downloading, contentDescription = "Download")
                         }
                     }
                 )
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = onAddClick,
+                    onClick = {
+                        val title = "newTitle"
+                        if (notes.any { it.title == title }) {
+                            val errorMsg =
+                                context.getString(R.string.DUPLICATE_FOLDER_NAME_ERROR, title)
+                            Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
+                        } else {
+                            onAddClick(title)
+                        }
+                    },
                     containerColor = colorResource(id = viewSettings.value.mainBackgroundRes)
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Добавить")
@@ -297,10 +438,10 @@ fun NotesListScreen(
                 AdBannerView(
                     modifier = Modifier
                         .fillMaxWidth()
-                       // .height(AdaptiveBannerHeightDp) // можно не задавать, адаптив сам подберёт
+                    // .height(AdaptiveBannerHeightDp) // можно не задавать, адаптив сам подберёт
                 )
 
-                FilterRow(foldersWithAll, viewSettings, padding){
+                FilterRow(foldersWithAll, viewSettings, padding) {
                     showSettingsDialog.value = "folders"
                 }
 
@@ -309,7 +450,14 @@ fun NotesListScreen(
                     notes,
                     viewSettings,
                     onNoteClick,
-                    onShareClick
+                    onShareClick = { note ->
+//                        val noteJson = Json { ignoreUnknownKeys = true; encodeDefaults = true }
+//                        val payload = noteJson.encodeToString(NoteEntity.serializer(),note.copy(id = 0))
+//                        noteEntityJsonForShare.value = payload
+                        CoroutineScope(Dispatchers.IO).launch {
+                            exportAndShare(context, note)
+                        }
+                    }
                 )
             }
         }
@@ -321,14 +469,18 @@ fun FilterRow(
     folders: List<FolderEntity>,
     viewSettings: MutableState<ViewSettings>,
     padding: PaddingValues,
-    onFolderDialog:()->Unit
+    onFolderDialog: () -> Unit
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 10.dp)
+            .padding(vertical = 2.dp, horizontal = 20.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        LazyRow() {
+        LazyRow(
+            modifier = Modifier
+                .weight(1f)
+        ) {
             items(folders) { folder ->
                 FolderItem(folder, viewSettings) {
                     viewSettings.value = ViewSettings(
@@ -339,11 +491,13 @@ fun FilterRow(
                     )
                 }
             }
-
         }
-        IconButton(onClick = {
-            onFolderDialog()
-        }) {
+        IconButton(
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .width(26.dp),
+            onClick = { onFolderDialog() }
+        ) {
             Icon(Icons.Default.Edit, contentDescription = "Edit folder")
         }
     }
@@ -364,7 +518,7 @@ fun FolderItem(
                 if (viewSettings.value.folderFilterId == folder.id) activeColorBg else noActiveColorBg,
                 RoundedCornerShape(6.dp)
             )
-            .padding(vertical = 8.dp, horizontal = 8.dp)
+            .padding(horizontal = 10.dp, vertical = 10.dp)
             .clickable { onClick() }
     ) {
         Text(

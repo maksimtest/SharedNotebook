@@ -2,9 +2,37 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!--  AdMob/UMP-->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Проверка сети (Wi-Fi/моб. данные), нужна AdMob/UMP -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+<!--    &lt;!&ndash; Android 12+ &ndash;&gt;-->
+<!--    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />-->
+<!--    <uses-permission-->
+<!--        android:name="android.permission.BLUETOOTH_SCAN"-->
+<!--        android:usesPermissionFlags="neverForLocation"-->
+<!--        tools:targetApi="31" />-->
+<!--    &lt;!&ndash; якщо будете рекламувати себе як peripheral &ndash;&gt;-->
+<!--    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />-->
+
+<!--    &lt;!&ndash; Android ≤ 11 (API 30 і нижче) — інсталяційні дозволи &ndash;&gt;-->
+<!--    <uses-permission-->
+<!--        android:name="android.permission.BLUETOOTH"-->
+<!--        android:maxSdkVersion="30" />-->
+<!--    <uses-permission-->
+<!--        android:name="android.permission.BLUETOOTH_ADMIN"-->
+<!--        android:maxSdkVersion="30" />-->
+
+<!--    &lt;!&ndash; Для сканування на старих Android потрібна локація &ndash;&gt;-->
+<!--    &lt;!&ndash; Для discovery на Android <= 11 потрібна локація &ndash;&gt;-->
+<!--    <uses-permission-->
+<!--        android:name="android.permission.ACCESS_FINE_LOCATION"-->
+<!--        android:maxSdkVersion="30" />-->
+
+<!--    <uses-feature-->
+<!--        android:name="android.hardware.bluetooth"-->
+<!--        android:required="true" />-->
+
 
     <application
         android:name=".MyApp"
@@ -29,31 +57,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".ImportActivity"
-            android:exported="true">
-            <!-- Получаем через Share Sheet -->
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-<!--                <data android:mimeType="application/json" />-->
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-
-<!--            &lt;!&ndash; И по тапу на файле из проводника/телеги (VIEW) &ndash;&gt;-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
-
-<!--&lt;!&ndash;                <data android:mimeType="application/json" />&ndash;&gt;-->
-<!--                <data android:mimeType="text/plain" />-->
-<!--                &lt;!&ndash; Можно ещё свой MIME и/или расширение, чтобы подсвечивалось твоим приложением &ndash;&gt;-->
-<!--                <data android:scheme="content" />-->
-<!--            </intent-filter>-->
         </activity>
 
         <meta-data

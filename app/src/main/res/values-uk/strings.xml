@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SharedNote</string>
+    <string name="title_activity_languge">LangugeActivity</string>
+
+    <string name="menu_title">Меню</string>
+    <string name="menu_language">Мова</string>
+    <string name="menu_trash">Корзина</string>
+    <string name="menu_theme_color">Колір теми</string>
+    <string name="menu_folder">Папки</string>
+    <string name="menu_mode">Групировка по списку/по блокам</string>
+    <string name="menu_sort">Сортировка</string>
+    <string name="menu_help">Допомога</string>
+    <string name="menu_about">Про продукт</string>
+
+    <string name="ALL_FOLDER">Усі</string>
+
+    <string name="DUPLICATE_FOLDER_NAME_ERROR">Помилка дубліювання %1$s папки.\nБудь ласка, переіменуйте відповідну папку!</string>
+    <string name="DUPLICATE_NOTE_TITLE_ERROR">Ошибка дубліювання заголовка %1$s запису.\nБудь ласка, переіменуйте відповідний запис!</string>
+
+    <string name="CONFIRM_DIALOG_TITLE">Confirm delete</string>
+    <string name="CONFIRM_DELETE_DIALOG_TEXT">Ви дійсно хочете виділити \"%1$s\"?"</string>
+    <string name="CONFIRM_BTN_YES">Так</string>
+    <string name="CONFIRM_BTN_NO">Ні</string>
+
+    <string name="ABOUT_DIALOG_VERSION">Версія %1$s</string>
+
+    <string name="HELP_DIALOG_TITLE1">SharedNote – Допомога та підтримка</string>
+    <string name="HELP_DIALOG_TEXT1">Ласкаво просимо до SharedNote! Ця сторінка проведе вас через основні можливості додатка та допоможе вирішити поширені питання.</string>
+
+    <string name="HELP_DIALOG_TITLE2">Що таке SharedNote?</string>
+    <string name="HELP_DIALOG_TEXT2">SharedNote — це простий і зручний додаток для нотаток, який дозволяє:\n
+        • Створювати та редагувати нотатки із заголовками та вмістом\n
+        • Виділяти важливі нотатки за допомогою кольорових заголовків\n
+        • Організовувати нотатки у папки\n
+        • Змінювати мову додатка\n
+        • Налаштовувати відображення нотаток (список або сітка)\n
+        • Сортувати нотатки за різними параметрами\n
+        • Ділитися нотатками з іншим пристроєм, на якому встановлено SharedNote
+</string>
+
+    <string name="HELP_DIALOG_TITLE3">Основні можливості</string>
+    <string name="HELP_DIALOG_SUBTITLE3">1. Створення нотаток</string>
+    <string name="HELP_DIALOG_TEXT3">Натисніть кнопку ➕ Додати, щоб створити нову нотатку. Введіть заголовок і текст, виберіть, чи вона активна, чи в архіві.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE4">2. Організація нотаток</string>
+    <string name="HELP_DIALOG_TEXT4">Створюйте папки, щоб підтримувати порядок у нотатках. Переміщайте нотатки між папками у будь-який час.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE5">3. Виділення важливих нотаток</string>
+    <string name="HELP_DIALOG_TEXT5">Призначайте різні кольори заголовкам нотаток. Використовуйте яскраві кольори для наголосу на термінових або важливих елементах.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE6">4. Налаштування</string>
+    <string name="HELP_DIALOG_TEXT6">Змінюйте мову додатка в налаштуваннях. Обирайте спосіб відображення нотаток: список для компактності або сітку для зручності перегляду.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE7">5. Сортування та фільтрація</string>
+    <string name="HELP_DIALOG_TEXT7">Сортуйте нотатки за датою створення, заголовком чи активністю. Використовуйте рядок пошуку для швидкого пошуку нотаток.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE8">6. Спільне використання</string>
+    <string name="HELP_DIALOG_TEXT8">Діліться нотатками з іншим пристроєм, на якому встановлено SharedNote. Корисно при зміні телефону або для синхронізації.</string>
+
+    <string name="HELP_DIALOG_TITLE9">Налаштування</string>
+    <string name="HELP_DIALOG_TEXT9">
+        • Зміна теми — оберіть кольорову тему.\n
+        • Мова — перемикайтеся між підтримуваними мовами.\n
+        • Режим відображення — оберіть список або сітку.
+</string>
+
+    <string name="HELP_DIALOG_TITLE10">Часті запитання</string>
+    <string name="HELP_DIALOG_TEXT10">
+        П: Як перенести нотатки на інший телефон?\nВ: Використайте функцію «Поділитися» у додатку.\n\n
+        П: Чи можна зробити резервну копію нотаток?\nВ: Так. Нотатки можна експортувати та відновити на іншому пристрої.\n\n
+        П: Чи можна виділити важливі нотатки?\nВ: Так, призначивши кольори заголовкам нотаток.\n\n
+        П: Чи працює SharedNote офлайн?\nВ: Звичайно. Усі можливості доступні без інтернету.
+</string>
+
+    <string name="HELP_DIALOG_TITLE11">Потрібна додаткова допомога?</string>
+    <string name="HELP_DIALOG_TEXT11">Якщо у вас є запитання, пропозиції чи проблеми, будь ласка, зв’яжіться з нами за адресою:\n support@example.com</string>
+
+</resources>

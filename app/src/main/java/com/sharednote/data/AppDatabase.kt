@@ -11,7 +11,7 @@ import com.sharednote.entity.NoteEntity
 
 @Database(entities = [
     NoteEntity::class, FolderEntity::class],
-    version = 13,
+    version = 15,
     exportSchema = true)
 
 abstract class AppDatabase : RoomDatabase() {

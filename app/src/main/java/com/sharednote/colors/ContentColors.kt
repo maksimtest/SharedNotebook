@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.colorResource
 import com.sharednote.R
-import com.sharednote.entity.ColorGroup
 
 @Composable
 fun rememberColorGroups(): List<ColorGroup> {

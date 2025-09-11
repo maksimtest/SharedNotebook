@@ -3,13 +3,17 @@ package com.sharednote.data
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.material3.ScaffoldDefaults
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sharednote.R
 import com.sharednote.entity.FolderEntity
 import com.sharednote.entity.NoteEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.String
@@ -31,7 +35,18 @@ class MainViewModel(private val repository: AppRepository) : ViewModel() {
             repository.updateNote(item)
         }
     }
+    fun updateAfterShare(item: NoteEntity) {
+        Log.d("MyTag", "MVVM: updateAfterShare item=${item}")
+        viewModelScope.launch {
+            repository.updateNote(item)
+        }
+    }
 
+    fun renumberAllFolders(folder: FolderEntity, num:Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.renumberFolders(folder.id, num)
+        }
+    }
     suspend fun insertNote(item: NoteEntity) {
         repository.insertNote(item)
     }

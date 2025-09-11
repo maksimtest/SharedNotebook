@@ -18,6 +18,9 @@ interface FolderDao {
     @Update
     suspend fun update(item: FolderEntity)
 
+    @Update
+    suspend fun updateAll(folders: List<FolderEntity>)
+
     @Delete
     suspend fun delete(item: FolderEntity)
 

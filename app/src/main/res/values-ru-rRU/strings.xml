@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SharedNote</string>
+    <string name="title_activity_languge">LangugeActivity</string>
+
+    <string name="menu_title">Меню</string>
+    <string name="menu_language">Язык</string>
+    <string name="menu_trash">Корзина</string>
+    <string name="menu_theme_color">Цвет темы</string>
+    <string name="menu_folder">Папки</string>
+    <string name="menu_mode">Группировать по списку/по блокам</string>
+    <string name="menu_sort">Сортировка</string>
+    <string name="menu_help">Помощь</string>
+    <string name="menu_about">О нас</string>
+
+    <string name="ALL_FOLDER">Все</string>
+
+    <string name="DUPLICATE_FOLDER_NAME_ERROR">Ошибка дублирования %1$s папки.\nПожалуйста, переименуйте имеющуюся папку!</string>
+    <string name="DUPLICATE_NOTE_TITLE_ERROR">Ошибка дублирования заголовка %1$s записи.\nПожалуйста, переименуйте имеющуюся запись!</string>
+
+    <string name="CONFIRM_DIALOG_TITLE">Confirm delete</string>
+    <string name="CONFIRM_DELETE_DIALOG_TEXT">Вы хотите удалить \"%1$s\"?"</string>
+    <string name="CONFIRM_BTN_YES">Да</string>
+    <string name="CONFIRM_BTN_NO">Нет</string>
+
+    <string name="ABOUT_DIALOG_VERSION">Версия %1$s</string>
+
+    <string name="HELP_DIALOG_TITLE1">SharedNote – Помощь и поддержка</string>
+    <string name="HELP_DIALOG_TEXT1">Добро пожаловать в SharedNote! Эта страница проведёт вас по основным функциям приложения и поможет решить часто возникающие вопросы.</string>
+
+    <string name="HELP_DIALOG_TITLE2">Что такое SharedNote?</string>
+    <string name="HELP_DIALOG_TEXT2">SharedNote — это простое и удобное приложение для заметок, которое позволяет:\n
+        • Создавать и редактировать заметки с заголовками и содержимым\n
+        • Выделять важные заметки с помощью окраски их заголовков\n
+        • Организовывать заметки по папкам\n
+        • Менять язык приложения\n
+        • Настраивать отображение заметок (список или сетка)\n
+        • Сортировать заметки по разным параметрам\n
+        • Делиться заметками с другим устройством, на котором установлен SharedNote
+    </string>
+
+    <string name="HELP_DIALOG_TITLE3">Основные функции</string>
+    <string name="HELP_DIALOG_SUBTITLE3">1. Создание заметок</string>
+    <string name="HELP_DIALOG_TEXT3">Нажмите кнопку ➕ Добавить, чтобы создать новую заметку. Введите заголовок и содержимое, выберите, активна она или в архиве.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE4">2. Организация заметок</string>
+    <string name="HELP_DIALOG_TEXT4">Создавайте папки, чтобы поддерживать структуру заметок. Перемещайте заметки между папками в любое время.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE5">3. Выделение важных заметок</string>
+    <string name="HELP_DIALOG_TEXT5">Назначайте разные цвета для заголовков заметок. Используйте яркие цвета для выделения срочных или важных элементов.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE6">4. Настройка</string>
+    <string name="HELP_DIALOG_TEXT6">Меняйте язык приложения в настройках. Выбирайте способ отображения заметок: список для компактности или сетку для наглядности.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE7">5. Сортировка и фильтрация</string>
+    <string name="HELP_DIALOG_TEXT7">Сортируйте заметки по дате создания, заголовку или активности. Используйте строку поиска для быстрого поиска заметок.</string>
+
+    <string name="HELP_DIALOG_SUBTITLE8">6. Совместное использование</string>
+    <string name="HELP_DIALOG_TEXT8">Делитесь заметками с другим устройством, на котором установлен SharedNote. Полезно при смене телефона или синхронизации.</string>
+
+    <string name="HELP_DIALOG_TITLE9">Настройки</string>
+    <string name="HELP_DIALOG_TEXT9">
+        • Смена темы — выберите цветовую тему.\n
+        • Язык — переключайтесь между поддерживаемыми языками.\n
+        • Режим отображения — выберите список или сетку.
+    </string>
+
+    <string name="HELP_DIALOG_TITLE10">Часто задаваемые вопросы</string>
+    <string name="HELP_DIALOG_TEXT10">
+        В: Как перенести заметки на другой телефон?\nО: Используйте функцию «Поделиться» внутри приложения.\n\n
+        В: Можно ли сделать резервную копию заметок?\nО: Да. Заметки можно экспортировать и восстановить на другом устройстве.\n\n
+        В: Можно ли выделить важные заметки?\nО: Да, назначив цвета заголовкам заметок.\n\n
+        В: Работает ли SharedNote офлайн?\nО: Конечно. Все функции доступны без подключения к интернету.
+    </string>
+
+    <string name="HELP_DIALOG_TITLE11">Нужна дополнительная помощь?</string>
+    <string name="HELP_DIALOG_TEXT11">Если у вас есть вопросы, предложения или проблемы, пожалуйста, свяжитесь с нами по адресу:\n support@example.com</string>
+
+</resources>
