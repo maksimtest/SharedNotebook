@@ -23,7 +23,7 @@ It is designed to demonstrate **clean architecture, modern UI with Compose, mult
 
 ## 📷 Screenshots
 
-<img src="screenshots/screenshot_01.png" width="160" alt="Children screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_02.png" width="160" alt="Sickness screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_03.png" width="160" alt="Daily routine screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_04.png" width="160" alt="Statistic screen" />
+<img src="screenshots/screenshot_01.png" width="180" alt="Children screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_02.png" width="180" alt="Sickness screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_03.png" width="180" alt="Daily routine screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_04.png" width="180" alt="Statistic screen" />
 <img src="screenshots/screenshot_05.png" width="160" alt="Children screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_06.png" width="160" alt="Sickness screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_07.png" width="160" alt="Daily routine screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_08.png" width="160" alt="Statistic screen" />
 
 ---
