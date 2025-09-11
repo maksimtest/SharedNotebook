@@ -1,7 +1,7 @@
 # <img src="screenshots/icon.png" width="24" alt="SharedNote icon" /> SharedNote
 
-SharedNote is a simple and convenient **note-taking Android application** built with **Kotlin** and **Jetpack Components**.  
-It is designed to demonstrate **clean architecture, multi-language support, local persistence, and modern Android development practices**.
+SharedNote is a simple and convenient **note-taking Android application** built with **Kotlin** and **Jetpack Compose**.  
+It is designed to demonstrate **clean architecture, modern UI with Compose, multi-language support, local persistence, and integration with Google services (AdMob)**.
 
 ---
 
@@ -16,28 +16,40 @@ It is designed to demonstrate **clean architecture, multi-language support, loca
 - 📤 Share notes as plain text via any messenger (Telegram, email, etc.)
 - 🔄 Share notes between devices running SharedNote
 - 🎨 Custom themes and note appearance personalization
-- 📺 Simple, clean, Material Design inspired UI
+- 📺 **Modern UI built entirely with Jetpack Compose**
+- 📢 Google AdMob integration for ads
 
 ---
 
 ## 📷 Screenshots
 
 <img src="screenshots/screenshot_01.png" width="160" alt="Children screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_02.png" width="160" alt="Sickness screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_03.png" width="160" alt="Daily routine screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_04.png" width="160" alt="Statistic screen" />
+<img src="screenshots/screenshot_05.png" width="160" alt="Children screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_06.png" width="160" alt="Sickness screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_07.png" width="160" alt="Daily routine screen" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/screenshot_08.png" width="160" alt="Statistic screen" />
 
 ---
 
 ## 🛠 Tech Stack
 
 - **Kotlin**
+- **Jetpack Compose** – declarative UI toolkit (Material3, Composables, Scaffold, LazyColumn, etc.)
 - **Jetpack Components**:
   - ViewModel
-  - LiveData / StateFlow
   - Room Database (for local persistence)
   - Navigation
 - **Coroutines & Flow** – asynchronous operations and reactive UI updates
-- **Material Design 3 (Compose-ready)** for modern UI
 - **ActivityResult API** – for system interactions (e.g., sharing)
 - **Google AdMob** – for in-app advertising
+
+---
+
+## 📁 Project Highlights
+
+- 🏗 Built with **MVVM architecture** and clean separation of concerns
+- ⚡ Reactive UI with **Compose + StateFlow**
+- 🗄 Database-driven app with **Room**, handling folders & notes with migrations
+- 🌍 Internationalization (English, Russian, Ukrainian)
+- 🎨 **Full Compose UI**: no XML layouts, all screens described as Composables
+- 📢 Integration with **Google AdMob** (ads handling & privacy policy compliance)
 
 ---
 
@@ -78,4 +90,4 @@ git clone https://github.com/yourusername/SharedNote.git
 open in Android Studio
 Run ▶️
 ```
-------------------
+
